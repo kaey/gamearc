@@ -14,3 +14,29 @@ Currently supports:
 - RPG Maker MV (rpgmvp, rpgmvm, rpgmvo)
 - Ren'py (rpa, v3 only)
 - Wolf RPG (dxa, v6 only, compression unsupported)
+
+
+Usage
+-----
+
+```
+Usage:
+  gamearc-blorb [FLAGS] SRCFILE DSTDIR
+
+Flags:
+  -version
+    	Print version and exit
+
+Specify SRCFILE and DSTDIR
+```
+
+
+Building from source
+-----
+
+- install go compiler toolchain https://golang.org/dl
+- open console or powershell
+- run `go env -w GO111MODULE=on`
+- run `go get github.com/kaey/gamearc/cmd/...`
+- binaries will appear in `$HOME/go/bin` (you can verify its location by running `go env GOPATH`)
+
