@@ -31,6 +31,12 @@ Specify SRCFILE and DSTDIR
 ```
 
 
+Releases
+-----
+
+https://github.com/kaey/gamearc/releases
+
+
 Building from source
 -----
 
