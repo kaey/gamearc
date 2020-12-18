@@ -1,4 +1,4 @@
-[![GoDoc](https://godoc.org/github.com/kaey/gamearc?status.svg)](https://godoc.org/github.com/kaey/gamearc)
+[![Go Reference](https://pkg.go.dev/badge/github.com/kaey/gamearc.svg)](https://pkg.go.dev/github.com/kaey/gamearc)
 
 Gamearc
 =======
