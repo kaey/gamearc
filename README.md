@@ -14,6 +14,7 @@ Currently supports:
 - RPG Maker MV (rpgmvp, rpgmvm, rpgmvo)
 - Ren'py (rpa, v3 only)
 - Wolf RPG (dxa, v6 only, compression unsupported)
+- Electron (asar)
 
 
 Usage
