@@ -5,7 +5,8 @@ import (
 	"encoding/binary"
 	"fmt"
 	"io"
-	"path/filepath"
+	"path"
+	"strings"
 )
 
 type Archive struct {
@@ -89,16 +90,16 @@ func (a *Archive) readIndex() error {
 			}
 		}
 
-		path := filepath.Clean(filepath.FromSlash(string(pathb)))
-		if filepath.IsAbs(path) {
-			return fmt.Errorf("archive contains a file with absolute path: %q", path)
+		p := path.Clean(string(pathb))
+		if path.IsAbs(p) {
+			return fmt.Errorf("archive contains a file with absolute path: %q", p)
 		}
-		if len(path) >= 3 && path[0] == '.' && path[1] == '.' && path[2] == byte(filepath.Separator) {
-			return fmt.Errorf("archive contains a file with path that leads outside of its root: %q", path)
+		if strings.Split(p, "/")[0] == ".." {
+			return fmt.Errorf("archive contains a file with path that leads outside of its root: %q", p)
 		}
 		a.Files = append(a.Files, File{
 			r:      a.r,
-			path:   path,
+			path:   p,
 			offset: int64(fileoffset),
 			size:   int64(filesize),
 			key:    filekey,

@@ -3,7 +3,7 @@ package wolf
 import (
 	"fmt"
 	"io"
-	"path/filepath"
+	"path"
 	"strings"
 
 	"golang.org/x/text/encoding/japanese"
@@ -101,7 +101,7 @@ func (a *Archive) readIndex() error {
 	return nil
 }
 
-func (a *Archive) decodeDir(b []byte, dataOffset, fileTableOffset, dirTableOffset, curDirOffset int, tr transform.Transformer, path string) error {
+func (a *Archive) decodeDir(b []byte, dataOffset, fileTableOffset, dirTableOffset, curDirOffset int, tr transform.Transformer, curpath string) error {
 	//fileOffset := getUint64(b, dirTableOffset+curDirOffset+0)
 	//parentOffset := getUint64(b, dirTableOffset+curDirOffset+8)
 	nFiles := getUint64(b, dirTableOffset+curDirOffset+16)
@@ -134,7 +134,7 @@ func (a *Archive) decodeDir(b []byte, dataOffset, fileTableOffset, dirTableOffse
 		}
 
 		if attr&0x10 > 0 { // is a directory, https://docs.microsoft.com/en-us/windows/win32/fileio/file-attribute-constants
-			if err := a.decodeDir(b, dataOffset, fileTableOffset, dirTableOffset, filedataOffset, tr, filepath.Join(path, name)); err != nil {
+			if err := a.decodeDir(b, dataOffset, fileTableOffset, dirTableOffset, filedataOffset, tr, path.Join(curpath, name)); err != nil {
 				return err
 			}
 
@@ -144,7 +144,7 @@ func (a *Archive) decodeDir(b []byte, dataOffset, fileTableOffset, dirTableOffse
 		a.Files = append(a.Files, File{
 			r:      a.r,
 			key:    a.key,
-			path:   filepath.Join(path, name),
+			path:   path.Join(curpath, name),
 			offset: int64(dataOffset + filedataOffset),
 			size:   int64(size),
 		})

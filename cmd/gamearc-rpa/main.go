@@ -54,7 +54,7 @@ func Main(srcfile, dstdir string) error {
 	}
 
 	for _, f := range arc.Files {
-		dstfile := filepath.Join(dstdir, f.Path())
+		dstfile := filepath.Join(dstdir, filepath.FromSlash(f.Path()))
 		if err := os.MkdirAll(filepath.Dir(dstfile), 0755); err != nil {
 			return err
 		}

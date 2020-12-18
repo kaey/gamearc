@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"io"
 	"math/big"
-	"path/filepath"
+	"path"
 	"strconv"
 	"strings"
 
@@ -90,19 +90,18 @@ func (a *Archive) readIndex() error {
 	a.Files = make([]File, 0, len(trailerMap))
 
 	for k, v := range trailerMap {
-		path, ok := k.(string)
+		p, ok := k.(string)
 		if !ok {
 			return fmt.Errorf("expected string path, got: %q", k)
 		}
-		// Convert path to system specific and strip first part (it matches archive name),
-		// clean then run checks.
-		pathParts := strings.Split(filepath.FromSlash(path), string(filepath.Separator))
-		path = filepath.Clean(filepath.Join(pathParts[1:]...))
-		if filepath.IsAbs(path) {
-			return fmt.Errorf("archive contains a file with absolute path: %q", path)
+		// Strip first part (it matches archive name), clean then run checks.
+		pp := strings.Split(path.Clean(p), "/")
+		p = path.Join(pp[1:]...)
+		if path.IsAbs(p) {
+			return fmt.Errorf("archive contains a file with absolute path: %q", p)
 		}
-		if len(path) >= 3 && path[0] == '.' && path[1] == '.' && path[2] == byte(filepath.Separator) {
-			return fmt.Errorf("archive contains a file with path that leads outside of its root: %q", path)
+		if strings.Split(p, "/")[0] == ".." {
+			return fmt.Errorf("archive contains a file with path that leads outside of its root: %q", p)
 		}
 
 		v2, ok := v.([]interface{})
@@ -138,7 +137,7 @@ func (a *Archive) readIndex() error {
 
 		a.Files = append(a.Files, File{
 			r:      a.r,
-			path:   path,
+			path:   p,
 			offset: offset,
 			size:   size,
 		})
