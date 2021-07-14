@@ -120,11 +120,15 @@ func (a *Archive) readIndex() error {
 			return fmt.Errorf("expected 3 items in a tuple, got %v", len(tuple))
 		}
 
-		offsetBig, ok := tuple[0].(*big.Int)
+		offsetEnc, ok := tuple[0].(int64)
 		if !ok {
-			return fmt.Errorf("expected offset big.Int value, got %T", tuple[0])
+			o, ok := tuple[0].(*big.Int)
+			if !ok {
+				return fmt.Errorf("expected offset big.Int or int64 value, got %T", tuple[0])
+			}
+			offsetEnc = o.Int64()
 		}
-		offset := offsetBig.Int64() ^ key
+		offset := offsetEnc ^ key
 		if offset >= a.size {
 			return fmt.Errorf("file offset beyond file size, offset: %v, size: %v", offset, a.size)
 		}
