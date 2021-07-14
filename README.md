@@ -43,7 +43,6 @@ Building from source
 
 - install go compiler toolchain https://golang.org/dl
 - open console or powershell
-- run `go env -w GO111MODULE=on`
 - run `go get github.com/kaey/gamearc/cmd/...`
 - binaries will appear in `$HOME/go/bin` (you can verify its location by running `go env GOPATH`)
 
