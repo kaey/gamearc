@@ -12,6 +12,7 @@ Currently supports:
 - Inform 7 (blorb)
 - RPG Maker VX Ace (rgss3a, v3 only)
 - RPG Maker MV (rpgmvp, rpgmvm, rpgmvo)
+- RPG Maker MZ (png_, m4a_, ogg_)
 - Ren'py (rpa, v3 only)
 - Wolf RPG (dxa, v6 only, compression unsupported)
 - Electron (asar)

@@ -85,11 +85,11 @@ filesLoop:
 		base := strings.TrimSuffix(filepath.Base(srcfile.Name()), ext) // basename without extension (for ex w04_16)
 
 		switch ext {
-		case ".rpgmvp":
+		case ".rpgmvp", ".png_":
 			ext = ".png"
-		case ".rpgmvm":
+		case ".rpgmvm", ".m4a_":
 			ext = ".m4a"
-		case ".rpgmvo":
+		case ".rpgmvo", ".ogg_":
 			ext = ".ogg"
 		default:
 			// Not encrypted.
