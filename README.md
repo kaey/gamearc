@@ -43,7 +43,6 @@ Building from source
 -----
 
 - install go compiler toolchain https://golang.org/dl
-- open console or powershell
-- run `go get github.com/kaey/gamearc/cmd/...`
+- run `go install github.com/kaey/gamearc/cmd/...@latest`
 - binaries will appear in `$HOME/go/bin` (you can verify its location by running `go env GOPATH`)
 
