@@ -14,6 +14,7 @@ Currently supports:
 - Ren'py (rpa, v3 only)
 - Wolf RPG (dxa, v6 only, compression unsupported)
 - Electron (asar)
+- zip (decodes non-utf8 filenames as shift-jis)
 
 
 Usage
