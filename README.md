@@ -5,8 +5,6 @@ Gamearc
 
 Command-line unpackers for several archive formats used in games.
 
-Unpolished and mostly untested.
-
 Currently supports:
 
 - Inform 7 (blorb)
@@ -46,3 +44,7 @@ Building from source
 - run `go install github.com/kaey/gamearc/cmd/...@latest`
 - binaries will appear in `$HOME/go/bin` (you can verify its location by running `go env GOPATH`)
 
+Similar projects
+-----
+
+- https://notabug.org/gameripper/gameripper

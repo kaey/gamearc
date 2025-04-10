@@ -3,7 +3,6 @@ package main
 import (
 	"flag"
 	"fmt"
-	"io/ioutil"
 	"log"
 	"os"
 	"path/filepath"
@@ -55,7 +54,7 @@ func Main(srcfile, dstdir string) error {
 
 	for _, f := range arc.Files {
 		dst := filepath.Join(dstdir, filepath.FromSlash(f.Path()))
-		if err := os.MkdirAll(filepath.Dir(dst), 0755); err != nil {
+		if err := os.MkdirAll(filepath.Dir(dst), 0o755); err != nil {
 			log.Fatalln("DST create error:", err)
 		}
 
@@ -64,7 +63,7 @@ func Main(srcfile, dstdir string) error {
 			log.Fatalln(err)
 		}
 
-		if err := ioutil.WriteFile(dst, data, 0644); err != nil {
+		if err := os.WriteFile(dst, data, 0o644); err != nil {
 			log.Fatalln(err)
 		}
 	}

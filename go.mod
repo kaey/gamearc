@@ -1,6 +1,6 @@
 module github.com/kaey/gamearc
 
-go 1.18
+go 1.24
 
 require (
 	github.com/kisielk/og-rek v1.2.0

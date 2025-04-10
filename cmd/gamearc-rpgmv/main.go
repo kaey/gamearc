@@ -6,7 +6,6 @@ import (
 	"flag"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"log"
 	"os"
 	"path/filepath"
@@ -46,7 +45,7 @@ func main() {
 }
 
 func Main(srcdir, dstdir, keyFilePath string) error {
-	keyFileData, err := ioutil.ReadFile(keyFilePath)
+	keyFileData, err := os.ReadFile(keyFilePath)
 	if err != nil {
 		return fmt.Errorf("key-file read error: %w", err)
 	}
@@ -65,12 +64,12 @@ func Main(srcdir, dstdir, keyFilePath string) error {
 		return fmt.Errorf("malformed key: %w", err)
 	}
 
-	if err := os.MkdirAll(dstdir, 0755); err != nil {
+	if err := os.MkdirAll(dstdir, 0o755); err != nil {
 		return fmt.Errorf("DST create error: %w", err)
 	}
 
 	// TODO: support single src file
-	srcfiles, err := ioutil.ReadDir(srcdir)
+	srcfiles, err := os.ReadDir(srcdir)
 	if err != nil {
 		return err
 	}
@@ -121,7 +120,7 @@ filesLoop:
 	return nil
 }
 
-func verifyHeader(b [16]byte) error {
+func verifyHeader(_ [16]byte) error {
 	// TODO: maybe implement
 	return nil
 }
