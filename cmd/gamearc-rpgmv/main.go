@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"encoding/hex"
 	"encoding/json"
 	"flag"
@@ -25,10 +26,6 @@ func main() {
 		os.Exit(0)
 	}
 
-	if *keyFilePath == "" {
-		flagx.Fail("Specify -key-file")
-	}
-
 	srcfile := flag.Arg(0)
 	if srcfile == "" {
 		flagx.Fail("Specify SRCDIR and DSTDIR")
@@ -45,10 +42,30 @@ func main() {
 }
 
 func Main(srcdir, dstdir, keyFilePath string) error {
+	if keyFilePath == "" {
+		dir, err := filepath.Abs(srcdir)
+		if err != nil {
+			return fmt.Errorf("src absolute path error: %w", err)
+		}
+		for { // walk the tree up until we find System.json or hit /
+			ndir := filepath.Dir(dir)
+			if ndir == dir {
+				return fmt.Errorf("can't find data/System.json in any of the parent directories")
+			}
+			dir = ndir
+			keyFilePath = filepath.Join(dir, "data/System.json") // TODO: use case insensitive search.
+			if _, err := os.Stat(keyFilePath); err == nil {
+				break
+			}
+		}
+	}
 	keyFileData, err := os.ReadFile(keyFilePath)
 	if err != nil {
 		return fmt.Errorf("key-file read error: %w", err)
 	}
+
+	// strip utf-8 byte order mark.
+	keyFileData, _ = bytes.CutPrefix(keyFileData, []byte("\ufeff"))
 
 	keyFile := struct {
 		Key string `json:"encryptionKey"`
