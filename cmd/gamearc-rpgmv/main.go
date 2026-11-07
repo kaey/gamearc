@@ -7,6 +7,7 @@ import (
 	"flag"
 	"fmt"
 	"io"
+	"io/fs"
 	"log"
 	"os"
 	"path/filepath"
@@ -85,20 +86,28 @@ func Main(srcdir, dstdir, keyFilePath string) error {
 		return fmt.Errorf("DST create error: %w", err)
 	}
 
-	// TODO: support single src file
-	srcfiles, err := os.ReadDir(srcdir)
+	srcroot, err := os.OpenRoot(srcdir)
 	if err != nil {
 		return err
 	}
+	defer srcroot.Close()
 
-filesLoop:
-	for _, srcfile := range srcfiles {
-		if srcfile.IsDir() {
-			continue filesLoop
+	dstroot, err := os.OpenRoot(dstdir)
+	if err != nil {
+		return err
+	}
+	defer dstroot.Close()
+
+	return fs.WalkDir(srcroot.FS(), ".", func(srcpath string, srcentry fs.DirEntry, err error) error {
+		if err != nil {
+			return err
+		}
+		if srcentry.IsDir() {
+			return dstroot.MkdirAll(srcpath, 0o755)
 		}
 
-		ext := filepath.Ext(srcfile.Name())                            // extension with dot (for ex .rpgmvp)
-		base := strings.TrimSuffix(filepath.Base(srcfile.Name()), ext) // basename without extension (for ex w04_16)
+		ext := filepath.Ext(srcentry.Name())        // extension with dot (for ex .rpgmvp)
+		dstpath := strings.TrimSuffix(srcpath, ext) // relative path without extension (for ex w04_16)
 
 		switch ext {
 		case ".rpgmvp", ".png_":
@@ -109,32 +118,27 @@ filesLoop:
 			ext = ".ogg"
 		default:
 			// Not encrypted.
-			continue filesLoop
+			return nil
 		}
 
-		r, err := os.Open(filepath.Join(srcdir, srcfile.Name()))
+		r, err := srcroot.Open(srcpath)
 		if err != nil {
 			return err
 		}
+		defer r.Close()
 
-		w, err := os.Create(filepath.Join(dstdir, base+ext))
+		w, err := dstroot.Create(dstpath + ext)
 		if err != nil {
 			return err
 		}
+		defer w.Close()
 
-		if err := decrypt(key, r, w); err != nil {
+		if err := copyDecrypt(key, r, w); err != nil {
 			return err
 		}
 
-		if err := r.Close(); err != nil {
-			return err
-		}
-		if err := w.Close(); err != nil {
-			return err
-		}
-	}
-
-	return nil
+		return nil
+	})
 }
 
 func verifyHeader(_ [16]byte) error {
@@ -142,7 +146,7 @@ func verifyHeader(_ [16]byte) error {
 	return nil
 }
 
-func decrypt(key [16]byte, r io.Reader, w io.Writer) error {
+func copyDecrypt(key [16]byte, r io.Reader, w io.Writer) error {
 	var header [16]byte
 
 	if _, err := r.Read(header[:]); err != nil {

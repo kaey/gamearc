@@ -121,7 +121,7 @@ func (r *decryptReaderAt) ReadAt(p []byte, off int64) (n int, err error) {
 	ro := int(off - r.startOffset) // relative offset of a file
 	ko := uint32(ro / 4)           // key offset, one key encrypts 4 bytes
 	k := r.key                     // initial key
-	for i := uint32(0); i < ko; i++ {
+	for range ko {
 		// Can't simply multiply this by ko because of overflow semantics.
 		k = k*7 + 3
 	}

@@ -107,7 +107,7 @@ func (a *Archive) decodeDir(b []byte, dataOffset, fileTableOffset, dirTableOffse
 	nFiles := getUint64(b, dirTableOffset+curDirOffset+16)
 	filelistOffset := getUint64(b, dirTableOffset+curDirOffset+24)
 
-	for i := 0; i < nFiles; i++ {
+	for i := range nFiles {
 		nameOffset := getUint64(b, fileTableOffset+filelistOffset+i*64+0)
 		attr := getUint64(b, fileTableOffset+filelistOffset+i*64+8)
 		//createTime := getUint64(b, fileTableOffset+filelistOffset+i*64+16)

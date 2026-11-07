@@ -83,7 +83,7 @@ func (a *Archive) readIndex() error {
 	}
 
 	// The rest of this bullshit code walks over pickle data and converts it into usable struct.
-	trailerMap, ok := trailer.(map[interface{}]interface{})
+	trailerMap, ok := trailer.(map[any]any)
 	if !ok {
 		return fmt.Errorf("expected trailer to be a map, got %T", trailer)
 	}
@@ -104,7 +104,7 @@ func (a *Archive) readIndex() error {
 			return fmt.Errorf("archive contains a file with path that leads outside of its root: %q", p)
 		}
 
-		v2, ok := v.([]interface{})
+		v2, ok := v.([]any)
 		if !ok {
 			return fmt.Errorf("expected slice value, got %T", v2)
 		}

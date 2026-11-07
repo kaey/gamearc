@@ -48,4 +48,4 @@ Building from source
 Alternatives
 -----
 
-- https://gitlab.com/gameripper/gameripper
+- https://codeberg.org/gameripper/gameripper
